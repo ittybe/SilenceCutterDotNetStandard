@@ -1,0 +1,396 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>SilenceCutter</name>
+    </assembly>
+    <members>
+        <member name="T:SilenceCutter.VideoManipulating.VideoManipulator">
+            <summary>
+            super class for all video manipulating classes
+            </summary>
+        </member>
+        <member name="F:SilenceCutter.VideoManipulating.VideoManipulator.silenceMark">
+            <summary>
+            silence mark for video part name
+            </summary>
+        </member>
+        <member name="F:SilenceCutter.VideoManipulating.VideoManipulator.noiseMark">
+            <summary>
+            noise mark for video part name
+            </summary>
+        </member>
+        <member name="F:SilenceCutter.VideoManipulating.VideoManipulator.detectedTime">
+            <summary>
+            detected time
+            </summary>
+        </member>
+        <member name="F:SilenceCutter.VideoManipulating.VideoManipulator.tempDir">
+            <summary>
+            temp dir where places all video file 
+            </summary>
+        </member>
+        <member name="T:SilenceCutter.VideoManipulating.VideoMerger">
+            <summary>
+            merge video parts, splited by video splitter
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.VideoManipulating.VideoMerger.TempDir">
+            <summary>
+            temp directory for video parts
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.VideoManipulating.VideoMerger.DetectedTime">
+            <summary>
+            list of time line with definition of volume level
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.VideoManipulating.VideoMerger.OutputPath">
+            <summary>
+            output fileInfo
+            </summary>
+        </member>
+        <member name="M:SilenceCutter.VideoManipulating.VideoMerger.#ctor(System.Collections.Generic.List{SilenceCutter.Detecting.TimeLineVolume},System.String,System.String,System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="FilePath">output filepath</param>
+            <param name="tempDirName">Temp directory path for save all splited part</param>
+            <param name="detectedTime">Detected time</param>
+        </member>
+        <member name="M:SilenceCutter.VideoManipulating.VideoMerger.MergeVideo(System.String,Xabe.FFmpeg.Events.ConversionProgressEventHandler)">
+            <summary>
+            split video on part with only silent or noise
+            </summary>
+            <param name="OnProgressHandler">handler for event OnProgress IConvertion's object </param>
+            <param name="PreferExtension">prefer extension for splited parts of video</param>
+        </member>
+        <member name="P:SilenceCutter.VideoManipulating.VideoPartsContainer.TempDir">
+            <summary>
+            temp directory for files
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.VideoManipulating.VideoPartsContainer.Container">
+            <summary>
+            contains every video part
+            </summary>
+        </member>
+        <member name="M:SilenceCutter.VideoManipulating.VideoPartsContainer.#ctor(System.Collections.Generic.List{SilenceCutter.Detecting.TimeLineVolume},System.String,System.String,System.String,System.String)">
+            <summary>
+            Generate names depends of detectedTime 
+            </summary>
+            <param name="DetectedTime">DetectVolumeLevel result</param>
+            <param name="preferExtension">Something from FileExtensions (Xabe lib) </param>
+            <param name="tempDir">dir for containing all splited video parts</param>
+            <returns></returns>
+        </member>
+        <member name="M:SilenceCutter.VideoManipulating.VideoPartsContainer.#ctor(System.IO.FileInfo[],System.String)">
+            <summary>
+            Create container from temp directory
+            </summary>
+            <param name="videoFiles">video file from temp directory</param>
+            <param name="tempDir">temp dir from where we create container</param>
+        </member>
+        <member name="M:SilenceCutter.VideoManipulating.VideoPartsContainer.SortByPartNumber">
+            <summary>
+            sort list by part number
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.VideoManipulating.VideoPartsContainer.Item(System.Int32)">
+            <summary>
+            get video info
+            </summary>
+            <param name="index"></param>
+            <returns></returns>
+        </member>
+        <member name="M:SilenceCutter.VideoManipulating.VideoPartsContainer.RemoveVideoFiles">
+            <summary>
+            remove all video files in temp directory
+            </summary>
+        </member>
+        <member name="T:SilenceCutter.VideoManipulating.VideoSpeedManipulator">
+            <summary>
+            Change Speed of the video
+            </summary>
+        </member>
+        <member name="F:SilenceCutter.VideoManipulating.VideoSpeedManipulator.NoiseCopyMark">
+            <summary>
+            noise copy mark for speeded up video part names in temp directory
+            </summary>
+        </member>
+        <member name="F:SilenceCutter.VideoManipulating.VideoSpeedManipulator.SilenceCopyMark">
+            <summary>
+            silence copy mark for speeded up video part names in temp directory
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.VideoManipulating.VideoSpeedManipulator.TempDir">
+            <summary>
+            temp directory for video parts
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.VideoManipulating.VideoSpeedManipulator.DetectedTime">
+            <summary>
+            list of time line with definition of volume level
+            </summary>
+        </member>
+        <member name="M:SilenceCutter.VideoManipulating.VideoSpeedManipulator.#ctor(System.Collections.Generic.List{SilenceCutter.Detecting.TimeLineVolume},System.String,System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="tempDir">temp directory that contains video parts</param>
+        </member>
+        <member name="M:SilenceCutter.VideoManipulating.VideoSpeedManipulator.ChangeSpeed(System.Double,System.Double,System.String,Xabe.FFmpeg.Events.ConversionProgressEventHandler)">
+            <summary>
+            change speed of the video
+            </summary>
+            <param name="noiseSpeed">noise change speed (0.25, 0.5 ...) WARNING: if you set this param more than ~ 10 (depends of the smallest duration value in list TimeLineVolume), it will corrupt the output final video</param>
+            <param name="Extension">video part extension in temp directory like .mp4, .mkv, ... etc.(use same extension as origin video files to make faster conversion)</param>
+            <param name="silenceSpeed">silence change speed (0.25, 0.5 ...) WARNING: if you set this param more than ~ 10 (depends of the smallest duration value in list TimeLineVolume), it will corrupt the output final video</param>
+            <param name="OnProgressHandler">Event handler OnProgress interface IConversion</param>
+        </member>
+        <member name="T:SilenceCutter.VideoManipulating.VideoSplitter">
+            <summary>
+            split video by volume level
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.VideoManipulating.VideoSplitter.TempDir">
+            <summary>
+            Temp directory for save all splited part
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.VideoManipulating.VideoSplitter.Media">
+            <summary>
+            Media property
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.VideoManipulating.VideoSplitter.DetectedTime">
+            <summary>
+            list of time line with definition of volume level
+            </summary>
+        </member>
+        <member name="M:SilenceCutter.VideoManipulating.VideoSplitter.#ctor(System.Collections.Generic.List{SilenceCutter.Detecting.TimeLineVolume},System.String,System.String,System.String,System.String)">
+            <summary>
+            
+            </summary>
+            <param name="inputPath">input path to video for split</param>
+            <param name="detectedTime">result of method SilenceCutter.Detecting.VolumeDetector.DetectVolumeLevel()</param>
+        </member>
+        <member name="M:SilenceCutter.VideoManipulating.VideoSplitter.SplitVideo(System.String,Xabe.FFmpeg.Events.ConversionProgressEventHandler)">
+            <summary>
+            split video on part with only silent or noise
+            </summary>
+            <param name="OnProgressHandler">handler for event OnProgress IConvertion's object </param>
+            <param name="PreferExtension">prefer extension for splited parts of video</param>
+        </member>
+        <member name="M:SilenceCutter.VideoManipulating.VideoSplitter.ClearTempDir">
+            <summary>
+            Clear temp directory
+            </summary>
+        </member>
+        <member name="M:SilenceCutter.VideoManipulating.VideoSplitter.RemoveTempDir">
+            <summary>
+            remove directory
+            </summary>
+        </member>
+        <member name="T:SilenceCutter.VideoPartNaming.VideoPartName">
+            <summary>
+            struct for Naming video parts 
+            </summary>
+        </member>
+        <member name="F:SilenceCutter.VideoPartNaming.VideoPartName.Pattern">
+            <summary>
+            RegularExpression for video part name
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.VideoPartNaming.VideoPartName.PartCode">
+            <summary>
+            Part code in char
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.VideoPartNaming.VideoPartName.PartNumber">
+            <summary>
+            number of video
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.VideoPartNaming.VideoPartName.FileExten">
+            <summary>
+            Extension of the video part
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.VideoPartNaming.VideoPartName.FullName">
+            <summary>
+            Full name in str format
+            </summary>
+        </member>
+        <member name="M:SilenceCutter.VideoPartNaming.VideoPartName.#ctor(System.String,System.Int64,System.String)">
+            <summary>
+            constructor
+            </summary>
+            <param name="code">code</param>
+            <param name="number">number</param>
+            <param name="fileExtension">file extension</param>
+        </member>
+        <member name="M:SilenceCutter.VideoPartNaming.VideoPartName.op_Explicit(System.String)~SilenceCutter.VideoPartNaming.VideoPartName">
+            <summary>
+            convert string to video part name
+            </summary>
+            <param name="str">input string</param>
+        </member>
+        <member name="F:SilenceCutter.VideoPartNaming.VideoPartNamesGenerator.PartCodeSilence">
+            <summary>
+            we define part video with this code as Silence
+            </summary>
+        </member>
+        <member name="F:SilenceCutter.VideoPartNaming.VideoPartNamesGenerator.PartCodeNoise">
+            <summary>
+            we define part video with this code as Noise
+            </summary>
+        </member>
+        <member name="M:SilenceCutter.VideoPartNaming.VideoPartNamesGenerator.GenerateNames(System.Collections.Generic.List{SilenceCutter.Detecting.TimeLineVolume},System.IO.DirectoryInfo,System.String)">
+            <summary>
+            Generate names depends of detectedTime 
+            </summary>
+            <param name="DetectedTime">DetectVolumeLevel result</param>
+            <param name="PreferExtension">Something from FileExtensions (Xabe lib) </param>
+            <param name="tempDir">dir for containing all splited video parts</param>
+            <returns></returns>
+        </member>
+        <member name="T:SilenceCutter.Detecting.VolumeValue">
+            <summary>
+            Volume value like Silence or Noise
+            </summary>
+        </member>
+        <member name="F:SilenceCutter.Detecting.VolumeValue.Silence">
+            <summary>
+            Silence mark
+            </summary>
+        </member>
+        <member name="F:SilenceCutter.Detecting.VolumeValue.Noise">
+            <summary>
+            Noise mark
+            </summary>
+        </member>
+        <member name="T:SilenceCutter.Detecting.TimeSpanVolume">
+            <summary>
+            struct for VolumeDetector
+            </summary>
+        </member>
+        <member name="T:SilenceCutter.Detecting.TimeLineVolume">
+            <summary>
+            Time line, have properties start, end, volumeLevel, duration
+            </summary>
+        </member>
+        <member name="T:SilenceCutter.Detecting.VolumeDetector">
+            <summary>
+            Detect audio volume
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.Detecting.VolumeDetector.AudioReader">
+            <summary>
+            AudioReader fundamental property for this class
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.Detecting.VolumeDetector.DetectedTime">
+            <summary>
+            DetectedTime 
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.Detecting.VolumeDetector.BufferSize">
+            <summary>
+            Buffer's Size in method DetectVolumeLevel()
+            </summary>
+        </member>
+        <member name="M:SilenceCutter.Detecting.VolumeDetector.DetectVolume(System.Single,System.Int32,System.Int32)">
+            <summary>
+            Detect volume, detected time will be in DetectedTime
+            </summary>
+            <param name="amplitudeSilenceThreshold">amplitude Threshold ( between 1 and 0 )</param>
+            <param name="Millisec">we split all audio on millisec blocks and detect this block as silence or sound</param>
+            <param name="millisecExtension">value for extend noise parts</param>
+        </member>
+        <member name="M:SilenceCutter.Detecting.VolumeDetector.FormatDetectedTimeSpans(System.Collections.Generic.List{SilenceCutter.Detecting.TimeSpanVolume})">
+            <summary>
+            Reformating DetectedTime into start-end TimeSpan list
+            </summary>
+            <param name="DetectedTime">result of DetectVolumeLevel()</param>
+            <returns> squeezed list </returns>
+        </member>
+        <member name="M:SilenceCutter.Detecting.VolumeDetector.MergeTimeLinesByThreshold(System.Int32)">
+            <summary>
+            if time span is less than the value, this time span will be marged with previous time span
+            </summary>
+            <param name="millisecMergeThreshold">if time span is less than the value, this time span will be marged with previous time span</param>
+        </member>
+        <member name="M:SilenceCutter.Detecting.VolumeDetector.MergeTimeLines">
+            <summary>
+            Merge close Time lines if volume the same
+            </summary>
+        </member>
+        <member name="M:SilenceCutter.Detecting.VolumeDetector.DeleteEmptyTimeLines">
+            <summary>
+            delete all time lines where duration is 0
+            </summary>
+        </member>
+        <member name="M:SilenceCutter.Detecting.VolumeDetector.ExtendNoiseReduceSilence(System.Int32)">
+            <summary>
+            extend each noise time span on paticular number, WARNING: Can use only if in list have not same volume at next or previous indexes of the value ( use method MergeTimeLine )
+            </summary>
+            <param name="millisecExtension">value for extend noise parts</param>
+        </member>
+        <member name="M:SilenceCutter.Detecting.VolumeDetector.DetectVolumeLevel(System.Single,System.Int32)">
+            <summary>
+            detect volume level in audio file
+            </summary>
+            <param name="amplitudeSilenceThreshold">amplitude Threshold ( between 1 and 0 )</param>
+            <param name="Millisec">we split all audio on millisec blocks and detect this block as silence or sound</param>
+            <returns>
+            List of Time duration and Volume level ( Sound or Silence )
+            </returns>
+        </member>
+        <member name="M:SilenceCutter.Detecting.VolumeDetector.MillisecToSamplesBlock(System.Int32)">
+            <summary>
+            convert millisec to samples
+            </summary>
+            <param name="Millisec">millisec</param>
+            <returns>block of samples</returns>
+        </member>
+        <member name="M:SilenceCutter.Detecting.VolumeDetector.SamplesBlockToMillisec(System.Int32)">
+            <summary>
+            convert samples to millisec
+            </summary>
+            <param name="SamplesBlock">number of samples</param>
+            <returns>millisec</returns>
+        </member>
+        <member name="M:SilenceCutter.Detecting.VolumeDetector.GetRecommendedMillisec">
+            <summary>
+            Get recommended millisec for method DetectVolumeLevel
+            </summary>
+            <returns>
+            millisec (less than 1000) that you should put in "DetectVolumeLevel" method
+            </returns>
+        </member>
+        <member name="M:SilenceCutter.Detecting.VolumeDetector.GetMaxAmplitude">
+            <summary>
+            Get max amplitude ( for right choose silence threshold for method DetectSilenceLevel() )
+            </summary>
+            <returns>Max Amplitude</returns>
+        </member>
+        <member name="M:SilenceCutter.Detecting.VolumeDetector.GetMaxAbsAmplitude">
+            <summary>
+            Get max abs amplitude ( for right choose silence threshold for method DetectSilenceLevel() )
+            </summary>
+            <returns>Max Abs Amplitude</returns>
+        </member>
+        <member name="M:SilenceCutter.Detecting.VolumeDetector.GetMinAmplitude">
+            <summary>
+            Get min amplitude ( for right choose silence threshold for method DetectSilenceLevel() )
+            </summary>
+            <returns>Min Amplitude</returns>
+        </member>
+        <member name="M:SilenceCutter.Detecting.VolumeDetector.GetMinAbsAmplitude">
+            <summary>
+            Get min abs amplitude ( for right choose silence threshold for method DetectSilenceLevel() )
+            </summary>
+            <returns>Min Abs Amplitude</returns>
+        </member>
+    </members>
+</doc>

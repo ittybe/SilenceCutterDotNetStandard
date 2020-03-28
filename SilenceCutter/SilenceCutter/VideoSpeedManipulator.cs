@@ -30,16 +30,27 @@ namespace SilenceCutter.VideoManipulating
         /// <summary>
         /// noise copy mark for speeded up video part names in temp directory
         /// </summary>
-        public const string NoiseCopyMark = "NCopy";
+        public string NoiseCopyMark 
+        {
+            get 
+            {
+                return noiseMark + "Copy";
+            }
+        }
         /// <summary>
         /// silence copy mark for speeded up video part names in temp directory
         /// </summary>
-        public const string SilenceCopyMark = "SCopy";
-
+        public string SilenceCopyMark 
+        {
+            get 
+            {
+                return silenceMark + "Copy";
+            }
+        }
         /// <summary>
         /// temp directory for video parts
         /// </summary>
-        
+
         public DirectoryInfo TempDir
         {
             get
@@ -113,7 +124,6 @@ namespace SilenceCutter.VideoManipulating
 
                 conversion.Start().Wait();
             }
-            container.RemoveVideoFiles();
         }
     }
 }
