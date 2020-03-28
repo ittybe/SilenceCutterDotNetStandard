@@ -61,8 +61,8 @@ namespace SilenceCutter.VideoManipulating
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="FilePath">output filepath</param>
-        /// <param name="tempDirName">Temp directory path for save all splited part</param>
+        /// <param name="outputPath">output filepath</param>
+        /// <param name="tempDir">Temp directory path for save all splited part</param>
         /// <param name="detectedTime">Detected time</param>
         public VideoMerger(List<TimeLineVolume> detectedTime, string tempDir, string noiseMark, string silenceMark, string outputPath) : base(detectedTime, tempDir, noiseMark, silenceMark)
         {
@@ -82,7 +82,7 @@ namespace SilenceCutter.VideoManipulating
             VideoPartsContainer container = new VideoPartsContainer(DetectedTime, TempDir.FullName, PreferExtension, noiseMark, silenceMark);
 
             // create and write to file, that places in temp windows directory, all video part names
-
+            ConversionQueue
             FileInfo videoPartsList = new FileInfo(Path.ChangeExtension(Path.GetTempFileName(), ".txt"));
             StreamWriter writer = File.CreateText(videoPartsList.FullName);
             foreach (var videoPart in container.Container) 

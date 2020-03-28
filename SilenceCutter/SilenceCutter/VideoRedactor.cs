@@ -4,7 +4,8 @@ using System.Text;
 using SilenceCutter.Detecting;
 using SilenceCutter.VideoManipulating;
 using SilenceCutter.VideoPartNaming;
-
+using Xabe.FFmpeg.Downloader;
+using System.IO;
 namespace SilenceCutter
 {
     /// <summary>
@@ -104,9 +105,9 @@ namespace SilenceCutter
             volumeDetector.DetectVolume(amplitudeSilenceThreshold, Millisec, millisecExtension);
             
             DetectedTime = volumeDetector.DetectedTime;
-            
-            videoMerger = new VideoMerger(DetectedTime, TempDir, NoiseMark, SilenceMark, OutputPath);
+
             videoSplitter = new VideoSplitter(DetectedTime, TempDir, NoiseMark, SilenceMark, InputPath);
+            videoMerger = new VideoMerger(DetectedTime, TempDir, NoiseMark, SilenceMark, OutputPath);
             speedManipulator = new VideoSpeedManipulator(DetectedTime, TempDir, NoiseMark, SilenceMark);
         }
 
@@ -131,6 +132,22 @@ namespace SilenceCutter
             videoSplitter.SplitVideo(PreferExtension);
             speedManipulator.ChangeSpeed(silenceSpeed, noiseSpeed, PreferExtension);
             videoMerger.MergeVideo(PreferExtension);
+        }
+        /// <summary>
+        /// this method should help to choose right threshold amplitude for method VolumeDetect
+        /// </summary>
+        /// <returns>max abs amplitude in audio stream</returns>
+        public float GetMaxAbsAmplitudeInAudioStream() 
+        {
+            return volumeDetector.GetMaxAbsAmplitude();
+        }
+        /// <summary>
+        /// remove temp dir with all contain files
+        /// </summary>
+        public void RemoveTempDir() 
+        {
+            DirectoryInfo tempDir = new DirectoryInfo(TempDir);
+            tempDir.Delete(true);
         }
     }
 }
