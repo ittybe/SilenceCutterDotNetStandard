@@ -68,11 +68,69 @@ namespace SilenceCutter
         private VideoMerger videoMerger;
         private VideoSplitter videoSplitter;
         private VideoSpeedManipulator speedManipulator;
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="inputPath">input video path</param>
+        /// <param name="outputPath">output video path</param>
+        /// <param name="tempDir">temp directory for video parts</param>
+        /// <param name="preferExtension">prefer extension</param>
+        /// <param name="noiseMark">noise mark for noises parts</param>
+        /// <param name="silenceMark">silence mark for silence parts</param>
+        public VideoRedactor(string inputPath, string outputPath, string tempDir, string preferExtension, string noiseMark, string silenceMark) 
+        {
+            InputPath = inputPath;
+            OutputPath = outputPath;
 
+            TempDir = tempDir;
+            
+            PreferExtension = preferExtension;
+            
+            NoiseMark = noiseMark;
+            SilenceMark = silenceMark;
 
+            PreferExtension = preferExtension;
 
+            volumeDetector = new VolumeDetector(inputPath);
+        }
+        /// <summary>
+        /// you have to call this method, because we can't cut or speed up noise or silence with out detecting
+        /// </summary>
+        /// <param name="amplitudeSilenceThreshold">silence amplitude</param>
+        /// <param name="Millisec">millisec to calc average amlitude of block of samples</param>
+        /// <param name="millisecExtension">after detecting we will add to noise this number of millisec</param>
+        public void DetectVolume(float amplitudeSilenceThreshold, int Millisec, int millisecExtension) 
+        {
+            volumeDetector.DetectVolume(amplitudeSilenceThreshold, Millisec, millisecExtension);
+            
+            DetectedTime = volumeDetector.DetectedTime;
+            
+            videoMerger = new VideoMerger(DetectedTime, TempDir, NoiseMark, SilenceMark, OutputPath);
+            videoSplitter = new VideoSplitter(DetectedTime, TempDir, NoiseMark, SilenceMark, InputPath);
+            speedManipulator = new VideoSpeedManipulator(DetectedTime, TempDir, NoiseMark, SilenceMark);
+        }
 
+        /// <summary>
+        /// cut from video 
+        /// </summary>
+        /// <param name="volume">volume level (silence, noise) to cut out</param>
+        public void Cut(VolumeValue volume) 
+        {
+            DetectedTime.RemoveAll(timeLine => timeLine.Volume == volume);
+        }
 
-
+        /// <summary>
+        /// start conversion
+        /// WARNING: if you set this param more than ~ 10 (depends of the millisec arg in DetectVolume method), it will corrupt the output final video
+        /// if you want to cut silence out , We recommended method Cut in this instance
+        /// </summary>
+        /// <param name="silenceSpeed">silence speed. WARNING: if you set this param more than ~ 10 (depends of the millisec arg in DetectVolume method), it will corrupt the output final video</param>
+        /// <param name="noiseSpeed">noise speed. WARNING: if you set this param more than ~ 10 (depends of the millisec arg in DetectVolume method), it will corrupt the output final video</param>
+        public void Start(double silenceSpeed, double noiseSpeed) 
+        {
+            videoSplitter.SplitVideo(PreferExtension);
+            speedManipulator.ChangeSpeed(silenceSpeed, noiseSpeed, PreferExtension);
+            videoMerger.MergeVideo(PreferExtension);
+        }
     }
 }

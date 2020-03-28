@@ -27,41 +27,39 @@ namespace SilenceCutter.VideoManipulating
     public class VideoSplitter : VideoManipulator
     {
         /// <summary>
-        /// Temp directory for save all splited part
+        /// temp directory for video parts
         /// </summary>
-        public DirectoryInfo TempDir 
+        public DirectoryInfo TempDir
         {
-            get 
+            get
             {
                 return base.tempDir;
             }
-        }
-
-        public string InputPath { get; set; }
-        
-        private IMediaInfo media;
-        /// <summary>
-        /// Media property
-        /// </summary>
-        public IMediaInfo Media 
-        {
-            get { return media; }
-            protected set { media = value; }
+            set
+            {
+                tempDir = value;
+            }
         }
         /// <summary>
         /// list of time line with definition of volume level
         /// </summary>
-        public List<TimeLineVolume> DetectedTime 
+        public List<TimeLineVolume> DetectedTime
         {
-            get 
+            get
             {
                 return detectedTime;
             }
-            protected set 
+            set
             {
                 detectedTime = value;
             }
         }
+        /// <summary>
+        /// input path
+        /// </summary>
+        public string InputPath { get; set; }
+        
+        
         /// <summary>
         /// 
         /// </summary>
@@ -70,7 +68,6 @@ namespace SilenceCutter.VideoManipulating
         public VideoSplitter(List<TimeLineVolume> detectedTime, string tempDir, string noiseMark, string silenceMark, string inputPath): base(detectedTime, tempDir, noiseMark, silenceMark) 
         {
             DetectedTime = detectedTime;
-            Media = MediaInfo.Get(inputPath).Result;
             InputPath = inputPath;    
             if (!this.tempDir.Exists)
                 this.tempDir.Create();

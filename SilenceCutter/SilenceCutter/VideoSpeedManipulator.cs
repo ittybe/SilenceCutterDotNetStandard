@@ -57,6 +57,10 @@ namespace SilenceCutter.VideoManipulating
             {
                 return base.tempDir;
             }
+            set 
+            {
+                tempDir = value;
+            }
         }
         /// <summary>
         /// list of time line with definition of volume level
@@ -67,7 +71,7 @@ namespace SilenceCutter.VideoManipulating
             {
                 return detectedTime;
             }
-            protected set
+            set
             {
                 detectedTime = value;
             }
