@@ -82,7 +82,6 @@ namespace SilenceCutter.VideoManipulating
             VideoPartsContainer container = new VideoPartsContainer(DetectedTime, TempDir.FullName, PreferExtension, noiseMark, silenceMark);
 
             // create and write to file, that places in temp windows directory, all video part names
-            ConversionQueue
             FileInfo videoPartsList = new FileInfo(Path.ChangeExtension(Path.GetTempFileName(), ".txt"));
             StreamWriter writer = File.CreateText(videoPartsList.FullName);
             foreach (var videoPart in container.Container) 

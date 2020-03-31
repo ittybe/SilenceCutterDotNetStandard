@@ -6,7 +6,8 @@ using SilenceCutter.VideoManipulating;
 using SilenceCutter.VideoPartNaming;
 using Xabe.FFmpeg.Downloader;
 using System.IO;
-namespace SilenceCutter
+
+namespace SilenceCutter.VideoManipulating
 {
     /// <summary>
     /// main class that uses all instrument of this package
@@ -107,8 +108,8 @@ namespace SilenceCutter
             DetectedTime = volumeDetector.DetectedTime;
 
             videoSplitter = new VideoSplitter(DetectedTime, TempDir, NoiseMark, SilenceMark, InputPath);
-            videoMerger = new VideoMerger(DetectedTime, TempDir, NoiseMark, SilenceMark, OutputPath);
             speedManipulator = new VideoSpeedManipulator(DetectedTime, TempDir, NoiseMark, SilenceMark);
+            videoMerger = new VideoMerger(DetectedTime, TempDir, NoiseMark, SilenceMark, OutputPath);
         }
 
         /// <summary>
@@ -122,14 +123,15 @@ namespace SilenceCutter
 
         /// <summary>
         /// start conversion
-        /// WARNING: if you set this param more than ~ 10 (depends of the millisec arg in DetectVolume method), it will corrupt the output final video
+        /// WARNING: if you set SPEED param more than ~ 10 (depends of the millisec arg in DetectVolume method), it will corrupt the output final video
         /// if you want to cut silence out , We recommended method Cut in this instance
         /// </summary>
         /// <param name="silenceSpeed">silence speed. WARNING: if you set this param more than ~ 10 (depends of the millisec arg in DetectVolume method), it will corrupt the output final video</param>
         /// <param name="noiseSpeed">noise speed. WARNING: if you set this param more than ~ 10 (depends of the millisec arg in DetectVolume method), it will corrupt the output final video</param>
-        public void Start(double silenceSpeed, double noiseSpeed) 
+        /// <param name="processNumber">number of process for one time</param>
+        public void Start(double silenceSpeed, double noiseSpeed, int processNumber) 
         {
-            videoSplitter.SplitVideo(PreferExtension);
+            videoSplitter.SplitVideo(PreferExtension, processNumber);
             speedManipulator.ChangeSpeed(silenceSpeed, noiseSpeed, PreferExtension);
             videoMerger.MergeVideo(PreferExtension);
         }

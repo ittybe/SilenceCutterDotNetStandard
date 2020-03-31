@@ -4,6 +4,27 @@
         <name>SilenceCutter</name>
     </assembly>
     <members>
+        <member name="T:SilenceCutter.VideoManipulating.ConversionQueueWait">
+            <summary>
+            Start 
+            </summary>
+        </member>
+        <member name="M:SilenceCutter.VideoManipulating.ConversionQueueWait.Add(Xabe.FFmpeg.IConversion)">
+            <summary>
+            add to list conversion
+            </summary>
+            <param name="conversion">conversion object</param>
+        </member>
+        <member name="M:SilenceCutter.VideoManipulating.ConversionQueueWait.Clear">
+            <summary>
+            clear conversions
+            </summary>
+        </member>
+        <member name="M:SilenceCutter.VideoManipulating.ConversionQueueWait.Start">
+            <summary>
+            start conversion
+            </summary>
+        </member>
         <member name="T:SilenceCutter.VideoManipulating.VideoManipulator">
             <summary>
             super class for all video manipulating classes
@@ -107,6 +128,100 @@
             remove all video files in temp directory
             </summary>
         </member>
+        <member name="T:SilenceCutter.VideoManipulating.VideoRedactor">
+            <summary>
+            main class that uses all instrument of this package
+            it can cut silence(noise), speed up silence(noise)
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.VideoManipulating.VideoRedactor.NoiseMark">
+            <summary>
+            string to mark noise parts
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.VideoManipulating.VideoRedactor.SilenceMark">
+            <summary>
+            string to mark silence parts 
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.VideoManipulating.VideoRedactor.PreferExtension">
+            <summary>
+            prefer extension for video parts in temp dir
+            and for output video
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.VideoManipulating.VideoRedactor.TempDir">
+            <summary>
+            Temp directory for video parts
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.VideoManipulating.VideoRedactor.InputPath">
+            <summary>
+            input path for raw video
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.VideoManipulating.VideoRedactor.OutputPath">
+            <summary>
+            output path for edited video
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.VideoManipulating.VideoRedactor.DetectedTime">
+            <summary>
+            Detected Timelines in video
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.VideoManipulating.VideoRedactor.PartsContainer">
+            <summary>
+            get container for parts container
+            WARNING: every get create new VideoPartsContainer (for sync List with this container)
+            </summary>
+        </member>
+        <member name="M:SilenceCutter.VideoManipulating.VideoRedactor.#ctor(System.String,System.String,System.String,System.String,System.String,System.String)">
+            <summary>
+            constructor
+            </summary>
+            <param name="inputPath">input video path</param>
+            <param name="outputPath">output video path</param>
+            <param name="tempDir">temp directory for video parts</param>
+            <param name="preferExtension">prefer extension</param>
+            <param name="noiseMark">noise mark for noises parts</param>
+            <param name="silenceMark">silence mark for silence parts</param>
+        </member>
+        <member name="M:SilenceCutter.VideoManipulating.VideoRedactor.DetectVolume(System.Single,System.Int32,System.Int32)">
+            <summary>
+            you have to call this method, because we can't cut or speed up noise or silence with out detecting
+            </summary>
+            <param name="amplitudeSilenceThreshold">silence amplitude</param>
+            <param name="Millisec">millisec to calc average amlitude of block of samples</param>
+            <param name="millisecExtension">after detecting we will add to noise this number of millisec</param>
+        </member>
+        <member name="M:SilenceCutter.VideoManipulating.VideoRedactor.Cut(SilenceCutter.Detecting.VolumeValue)">
+            <summary>
+            cut from video 
+            </summary>
+            <param name="volume">volume level (silence, noise) to cut out</param>
+        </member>
+        <member name="M:SilenceCutter.VideoManipulating.VideoRedactor.Start(System.Double,System.Double,System.Int32)">
+            <summary>
+            start conversion
+            WARNING: if you set SPEED param more than ~ 10 (depends of the millisec arg in DetectVolume method), it will corrupt the output final video
+            if you want to cut silence out , We recommended method Cut in this instance
+            </summary>
+            <param name="silenceSpeed">silence speed. WARNING: if you set this param more than ~ 10 (depends of the millisec arg in DetectVolume method), it will corrupt the output final video</param>
+            <param name="noiseSpeed">noise speed. WARNING: if you set this param more than ~ 10 (depends of the millisec arg in DetectVolume method), it will corrupt the output final video</param>
+            <param name="processNumber">number of process for one time</param>
+        </member>
+        <member name="M:SilenceCutter.VideoManipulating.VideoRedactor.GetMaxAbsAmplitudeInAudioStream">
+            <summary>
+            this method should help to choose right threshold amplitude for method VolumeDetect
+            </summary>
+            <returns>max abs amplitude in audio stream</returns>
+        </member>
+        <member name="M:SilenceCutter.VideoManipulating.VideoRedactor.RemoveTempDir">
+            <summary>
+            remove temp dir with all contain files
+            </summary>
+        </member>
         <member name="T:SilenceCutter.VideoManipulating.VideoSpeedManipulator">
             <summary>
             Change Speed of the video
@@ -174,12 +289,13 @@
             <param name="inputPath">input path to video for split</param>
             <param name="detectedTime">result of method SilenceCutter.Detecting.VolumeDetector.DetectVolumeLevel()</param>
         </member>
-        <member name="M:SilenceCutter.VideoManipulating.VideoSplitter.SplitVideo(System.String,Xabe.FFmpeg.Events.ConversionProgressEventHandler)">
+        <member name="M:SilenceCutter.VideoManipulating.VideoSplitter.SplitVideo(System.String,System.Int32,Xabe.FFmpeg.Events.ConversionProgressEventHandler)">
             <summary>
             split video on part with only silent or noise
             </summary>
             <param name="OnProgressHandler">handler for event OnProgress IConvertion's object </param>
             <param name="PreferExtension">prefer extension for splited parts of video</param>
+            <param name="processNumber">number of process for one time</param>
         </member>
         <member name="M:SilenceCutter.VideoManipulating.VideoSplitter.ClearTempDir">
             <summary>
@@ -254,99 +370,6 @@
             <param name="tempDir">dir for containing all splited video parts</param>
             <returns></returns>
         </member>
-        <member name="T:SilenceCutter.VideoRedactor">
-            <summary>
-            main class that uses all instrument of this package
-            it can cut silence(noise), speed up silence(noise)
-            </summary>
-        </member>
-        <member name="P:SilenceCutter.VideoRedactor.NoiseMark">
-            <summary>
-            string to mark noise parts
-            </summary>
-        </member>
-        <member name="P:SilenceCutter.VideoRedactor.SilenceMark">
-            <summary>
-            string to mark silence parts 
-            </summary>
-        </member>
-        <member name="P:SilenceCutter.VideoRedactor.PreferExtension">
-            <summary>
-            prefer extension for video parts in temp dir
-            and for output video
-            </summary>
-        </member>
-        <member name="P:SilenceCutter.VideoRedactor.TempDir">
-            <summary>
-            Temp directory for video parts
-            </summary>
-        </member>
-        <member name="P:SilenceCutter.VideoRedactor.InputPath">
-            <summary>
-            input path for raw video
-            </summary>
-        </member>
-        <member name="P:SilenceCutter.VideoRedactor.OutputPath">
-            <summary>
-            output path for edited video
-            </summary>
-        </member>
-        <member name="P:SilenceCutter.VideoRedactor.DetectedTime">
-            <summary>
-            Detected Timelines in video
-            </summary>
-        </member>
-        <member name="P:SilenceCutter.VideoRedactor.PartsContainer">
-            <summary>
-            get container for parts container
-            WARNING: every get create new VideoPartsContainer (for sync List with this container)
-            </summary>
-        </member>
-        <member name="M:SilenceCutter.VideoRedactor.#ctor(System.String,System.String,System.String,System.String,System.String,System.String)">
-            <summary>
-            constructor
-            </summary>
-            <param name="inputPath">input video path</param>
-            <param name="outputPath">output video path</param>
-            <param name="tempDir">temp directory for video parts</param>
-            <param name="preferExtension">prefer extension</param>
-            <param name="noiseMark">noise mark for noises parts</param>
-            <param name="silenceMark">silence mark for silence parts</param>
-        </member>
-        <member name="M:SilenceCutter.VideoRedactor.DetectVolume(System.Single,System.Int32,System.Int32)">
-            <summary>
-            you have to call this method, because we can't cut or speed up noise or silence with out detecting
-            </summary>
-            <param name="amplitudeSilenceThreshold">silence amplitude</param>
-            <param name="Millisec">millisec to calc average amlitude of block of samples</param>
-            <param name="millisecExtension">after detecting we will add to noise this number of millisec</param>
-        </member>
-        <member name="M:SilenceCutter.VideoRedactor.Cut(SilenceCutter.Detecting.VolumeValue)">
-            <summary>
-            cut from video 
-            </summary>
-            <param name="volume">volume level (silence, noise) to cut out</param>
-        </member>
-        <member name="M:SilenceCutter.VideoRedactor.Start(System.Double,System.Double)">
-            <summary>
-            start conversion
-            WARNING: if you set this param more than ~ 10 (depends of the millisec arg in DetectVolume method), it will corrupt the output final video
-            if you want to cut silence out , We recommended method Cut in this instance
-            </summary>
-            <param name="silenceSpeed">silence speed. WARNING: if you set this param more than ~ 10 (depends of the millisec arg in DetectVolume method), it will corrupt the output final video</param>
-            <param name="noiseSpeed">noise speed. WARNING: if you set this param more than ~ 10 (depends of the millisec arg in DetectVolume method), it will corrupt the output final video</param>
-        </member>
-        <member name="M:SilenceCutter.VideoRedactor.GetMaxAbsAmplitudeInAudioStream">
-            <summary>
-            this method should help to choose right threshold amplitude for method VolumeDetect
-            </summary>
-            <returns>max abs amplitude in audio stream</returns>
-        </member>
-        <member name="M:SilenceCutter.VideoRedactor.RemoveTempDir">
-            <summary>
-            remove temp dir with all contain files
-            </summary>
-        </member>
         <member name="T:SilenceCutter.Detecting.VolumeValue">
             <summary>
             Volume value like Silence or Noise
@@ -371,6 +394,35 @@
             <summary>
             Time line, have properties start, end, volumeLevel, duration
             </summary>
+        </member>
+        <member name="P:SilenceCutter.Detecting.TimeLineVolume.Start">
+            <summary>
+            begin
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.Detecting.TimeLineVolume.End">
+            <summary>
+            end
+            </summary>
+        </member>
+        <member name="P:SilenceCutter.Detecting.TimeLineVolume.Duration">
+            <summary>
+            Duration of timeline
+            </summary>
+        </member>
+        <member name="M:SilenceCutter.Detecting.TimeLineVolume.#ctor(SilenceCutter.Detecting.VolumeValue,System.TimeSpan,System.TimeSpan)">
+            <summary>
+            
+            </summary>
+            <param name="volume">Volume level</param>
+            <param name="_start">begin of time line</param>
+            <param name="_end">end of time line</param>
+        </member>
+        <member name="M:SilenceCutter.Detecting.TimeLineVolume.ToString">
+            <summary>
+            to string format
+            </summary>
+            <returns>string format</returns>
         </member>
         <member name="T:SilenceCutter.Detecting.VolumeDetector">
             <summary>

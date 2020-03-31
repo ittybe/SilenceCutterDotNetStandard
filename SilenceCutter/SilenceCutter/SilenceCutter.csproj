@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Ittybe</Authors>
+    <Company>Ittybe</Company>
+    <Description>Package for detecting, speed uping and cutting silence ( noises ) form media files</Description>
+    <PackageReleaseNotes>First release</PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/ittybe/SilenceCutterDotNetStandard</RepositoryUrl>
+    <PackageTags>c#, media, video editing</PackageTags>
+    <PackageProjectUrl>https://github.com/ittybe/SilenceCutterDotNetStandard</PackageProjectUrl>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

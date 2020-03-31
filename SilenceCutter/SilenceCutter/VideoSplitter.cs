@@ -77,10 +77,12 @@ namespace SilenceCutter.VideoManipulating
         /// </summary>
         /// <param name="OnProgressHandler">handler for event OnProgress IConvertion's object </param>
         /// <param name="PreferExtension">prefer extension for splited parts of video</param>
-        public void SplitVideo(string PreferExtension, ConversionProgressEventHandler OnProgressHandler = null)
+        /// <param name="processNumber">number of process for one time</param>
+        public void SplitVideo(string PreferExtension, int processNumber, ConversionProgressEventHandler OnProgressHandler = null)
         {
             //VideoPartsContainer container = VideoPartNamesGenerator.GenerateNames(DetectedTime, TempDir, PreferExtension);
             VideoPartsContainer container = new VideoPartsContainer(DetectedTime, TempDir.FullName, PreferExtension, noiseMark, silenceMark);
+            ConversionQueueWait conversionQueue = new ConversionQueueWait();
             for (int i = 0; i < DetectedTime.Count; i++)
             {
                 string outputPath = container[i].FullName;
@@ -92,7 +94,12 @@ namespace SilenceCutter.VideoManipulating
                 conversion.OnProgress += OnProgressHandler;
 
                 // wait for finishing of conversion
-                conversion.Start().Wait();
+                conversionQueue.Add(conversion);
+                if ((i % processNumber == 0 && i != 0) || i == DetectedTime.Count - 1) 
+                {
+                    conversionQueue.Start();
+                    conversionQueue.Clear();
+                }
             }
         }
         
