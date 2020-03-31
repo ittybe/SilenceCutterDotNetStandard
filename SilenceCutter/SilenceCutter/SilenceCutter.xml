@@ -351,6 +351,12 @@
             </summary>
             <param name="str">input string</param>
         </member>
+        <member name="M:SilenceCutter.VideoPartNaming.VideoPartName.op_Explicit(SilenceCutter.VideoPartNaming.VideoPartName)~System.IO.FileInfo">
+            <summary>
+            full name to FileInfo
+            </summary>
+            <param name="videoName"></param>
+        </member>
         <member name="F:SilenceCutter.VideoPartNaming.VideoPartNamesGenerator.PartCodeSilence">
             <summary>
             we define part video with this code as Silence

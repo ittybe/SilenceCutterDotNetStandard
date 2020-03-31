@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using SilenceCutter.Detecting;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace SilenceCutter.VideoPartNaming
 {
@@ -88,6 +89,14 @@ namespace SilenceCutter.VideoPartNaming
             {
                 throw new ApplicationException($"input str {str} is not match this patter {Pattern}");
             }
+        }
+        /// <summary>
+        /// full name to FileInfo
+        /// </summary>
+        /// <param name="videoName"></param>
+        public static explicit operator FileInfo(VideoPartName videoName) 
+        {
+            return new FileInfo(videoName.FullName);
         }
     }
 }

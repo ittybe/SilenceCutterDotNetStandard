@@ -119,7 +119,6 @@ namespace SilenceCutter.VideoManipulating
 
                 IConversion conversion = Conversion.New()
                     .AddStream(audioStream, videoStream)
-                    .AddParameter(" -video_track_timescale 900000 ")
                     .AddParameter($"-filter:a \"atempo = {audioSpeedStr}\"")
                     .AddParameter($"-filter:v \"setpts = {videoSpeedStr} * PTS\"")
                     .SetOutput(containerCopy[i].FullName);
@@ -127,6 +126,12 @@ namespace SilenceCutter.VideoManipulating
                 conversion.OnProgress += OnProgressHandler;
 
                 conversion.Start().Wait();
+            }
+            List<VideoPartName> savedNames = new List<VideoPartName>(container.Container);
+            container.RemoveVideoFiles();
+            for (int i = 0; i < savedNames.Count; i++) 
+            {
+                ((FileInfo)containerCopy.Container[i]).MoveTo(TempDir.FullName + "\\" + savedNames[i]);
             }
         }
     }
