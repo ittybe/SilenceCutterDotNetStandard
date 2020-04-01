@@ -2,7 +2,8 @@
 Silence Cutter .Net Standard  version 
 
 example of using my package 
-'''
+
+```
 using System;
 using SilenceCutter.Detecting;
 using System.IO;
@@ -46,5 +47,4 @@ namespace SilenceCutterDebugging
             Console.WriteLine(stopWatch.Elapsed.TotalSeconds);
         }
     }
-}
-'''
+}```
