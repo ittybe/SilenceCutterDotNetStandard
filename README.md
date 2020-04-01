@@ -47,4 +47,4 @@ namespace SilenceCutterDebugging
             Console.WriteLine(stopWatch.Elapsed.TotalSeconds);
         }
     }
-}```
+}
